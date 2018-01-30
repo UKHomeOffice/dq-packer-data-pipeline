@@ -16,6 +16,16 @@
         path: C:\tmp\install
         state: directory
 
+    - name: Create for Wherescape directory
+      win_file:
+        path: C:\tmp\install\logs\
+        state: directory
+
+    - name: Create Wherescape log file
+      win_file:
+        path: C:\tmp\install\logs\WhereScape_log.txt
+        state: touch
+
     - name: Create data-transfer folder
       win_file:
         path: C:\data-transfer
@@ -69,6 +79,9 @@
         aws configure set aws_secret_access_key None
       args:
         executable: powershell.exe
+
+    - name: Install Wherescape
+      win_command: cmd /C C:\tmp\install\red_68700.exe APPDIR=c:\WhereScape68700\ ALLUSERS=1 RebootYesNo=No Reboot=Suppress /qn /L*vx c:\tmp\install\logs\WhereScape_log.txt
 
     - name: Convert line endings from Linux to Windows (PowerShell)
       win_shell: '(Get-Content "C:\tmp\install\partitioning.txt") -replace "`n", "`r`n" | Set-Content "C:\tmp\install\volume_partitioning.txt"'
@@ -199,31 +212,11 @@
       win_shell: |
         C:\tmp\install\SSMS-Setup-ENU.exe /install /quiet /norestart
 
-    - name: Convert line endings from Linux to Windows (PowerShell)
-      win_shell: '(Get-Content "C:\tmp\install\progress_datadirect.properties") -replace "`n", "`r`n" | Set-Content "C:\tmp\install\progress_datadirect_config.properties"'
-
     - name: Unzip Progress Datadirect
       win_unzip:
         src: C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64.zip
         dest: C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64
         delete_archive: no
-
-    # - name: Install Progress Datadirect
-    #   win_shell: C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64\setup.exe -f C:\tmp\install\progress_datadirect_config.properties –i silent
-    #   args:
-    #     executable: cmd.exe
-
-    - name: Unzip Wherescape install config
-      win_unzip:
-        src: C:\tmp\install\wherescape.bat.zip
-        dest: C:\tmp\install
-        delete_archive: yes
-
-    - name: Convert line endings from Linux to Windows (PowerShell)
-      win_shell: '(Get-Content "C:\tmp\install\wherescape.bat") -replace "`n", "`r`n" | Set-Content "C:\install\wherescape_install.bat"'
- 
-    - name: Install Wherescape
-      win_command: cmd.exe C:\tmp\install\wherescape_install.bat
 
     - name: Unzip Cloudwatch config file
       win_unzip:
