@@ -3,13 +3,13 @@
 - name: Build Windows server.
   hosts: all
   tasks:
-    # - name: install all critical and security updates
-    #   win_updates:
-    #     category_names:
-    #       - CriticalUpdates
-    #       - SecurityUpdates
-    #       - UpdateRollups
-    #     state: installed
+    - name: install all critical and security updates
+      win_updates:
+        category_names:
+          - CriticalUpdates
+          - SecurityUpdates
+          - UpdateRollups
+        state: installed
 
     - name: Create directory structure for custom install packages
       win_file:

@@ -8,11 +8,5 @@ Go to C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64\setup.exe a
 
 Pseudo Ansible would look like the following however it does not work at present.
 
-- name: Unzip Progress Datadirect
-  win_unzip:
-    src: C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64.zip
-    dest: C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64
-    delete_archive: yes
-
 - name: Install Progress Datadirect
   win_command: cmd /C C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64\setup.exe -f C:\tmp\install\response.properties –i silent
