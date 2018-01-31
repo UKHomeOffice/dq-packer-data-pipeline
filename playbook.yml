@@ -212,6 +212,12 @@
       win_shell: |
         C:\tmp\install\SSMS-Setup-ENU.exe /install /quiet /norestart
 
+    - name: Unzip Progress Datadirect
+      win_unzip:
+        src: C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64.zip
+        dest: C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64
+        delete_archive: yes        
+
     - name: Unzip Cloudwatch config file
       win_unzip:
         src: C:\tmp\install\AWS.EC2.Windows.Cloudwatch.json.zip
