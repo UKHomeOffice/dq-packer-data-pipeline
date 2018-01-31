@@ -1,16 +1,16 @@
 pipeline:
 
   validate:
+    group: validate
     image: chrisns/packer-ansible
-    pull: true
     environment:
     commands:
       - export HOME=/home/packer
       - packer validate packer.json
 
   inspect:
+    group: validate
     image: chrisns/packer-ansible
-    pull: true
     environment:
     commands:
       - export HOME=/home/packer
@@ -18,15 +18,14 @@ pipeline:
 
   build:
     image: chrisns/packer-ansible
-    pull: true
     environment:
     commands:
       - export HOME=/home/packer
       - packer build packer.json
 
   packer-copy-prod:
+    group: copy
     image: chrisns/packer-encrypt-copy
-    pull: true
     commands:
       - export filters="--owner 093401982388 --filters "Name=name,Values=dq-data-pipeline-server*""
       - export aws_id=${PROD_ACC_ID}
@@ -40,8 +39,8 @@ pipeline:
       branch: master
 
   packer-copy-notprod:
+    group: copy
     image: chrisns/packer-encrypt-copy
-    pull: true
     commands:
       - export filters="--owner 093401982388 --filters "Name=name,Values=dq-data-pipeline-server*""
       - export aws_id=${NOTPROD_ACC_ID}
