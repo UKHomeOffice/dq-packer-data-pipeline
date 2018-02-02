@@ -16,6 +16,11 @@
         path: C:\tmp\install
         state: directory
 
+    - name: Create LOG folder
+      win_file:
+        path: C:\LOG
+        state: directory
+
     - name: Create data-transfer folder
       win_file:
         path: C:\data-transfer
@@ -78,7 +83,25 @@
       args:
         executable: cmd.exe
 
-#### Create folder structure on the various drives here - MISSING
+    - name: Create Backup folder on D
+      win_file:
+        path: D:\Backups
+        state: directory
+
+    - name: Create Deployment Logs on D
+      win_file:
+        path: D:\Deployment_Logs
+        state: directory
+
+    - name: Create Deployment Logs on D
+      win_file:
+        path: D:\Deployment_Logs
+        state: directory
+
+    - name: Create SVN folders
+      win_file:
+        path: D:\SVN\trunk\Wherescape\scripts\nrt
+        state: directory
 
     - name: Install PyODBC
       win_shell: pip3.exe install pyodbc
@@ -194,6 +217,10 @@
     - name: Install SQL Management studio
       win_shell: |
         C:\tmp\install\SSMS-Setup-ENU.exe /install /quiet /norestart
+
+    - name: Install Tableau cmd
+      win_shell: |
+        c:\tmp\install\TabcmdInstaller-x64.exe /VERYSILENT /NORESTART
 
     - name: Unzip Cloudwatch config file
       win_unzip:

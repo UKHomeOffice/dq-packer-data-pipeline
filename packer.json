@@ -12,7 +12,7 @@
       "source_ami_filter": {
         "filters": {
           "virtualization-type": "hvm",
-          "name": "base-win-2012r2-wherescape-*",
+          "name": "base-win-2012-wherescape-*",
           "root-device-type": "ebs"
         },
         "owners": [
@@ -29,7 +29,7 @@
         },
         {
           "device_name": "xvdb",
-          "volume_size": 500,
+          "volume_size": 200,
           "volume_type": "gp2",
           "delete_on_termination": true
         }
@@ -39,7 +39,7 @@
       "winrm_use_ssl": true,
       "winrm_insecure": true,
       "user_data_file": "./scripts/setupwrm.ps1",
-      "instance_type": "t2.micro",
+      "instance_type": "t2.medium",
       "ami_name": "dq-data-pipeline-server {{isotime | clean_ami_name}}",
       "ami_users": [
         "483846886818",
