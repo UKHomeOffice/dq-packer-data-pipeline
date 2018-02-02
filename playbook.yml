@@ -16,16 +16,6 @@
         path: C:\tmp\install
         state: directory
 
-    - name: Create for Wherescape directory
-      win_file:
-        path: C:\tmp\install\logs\
-        state: directory
-
-    - name: Create Wherescape log file
-      win_file:
-        path: C:\tmp\install\logs\WhereScape_log.txt
-        state: touch
-
     - name: Create data-transfer folder
       win_file:
         path: C:\data-transfer
@@ -79,9 +69,6 @@
         aws configure set aws_secret_access_key None
       args:
         executable: powershell.exe
-
-    - name: Install Wherescape
-      win_command: cmd /C C:\tmp\install\red_68700.exe APPDIR=c:\WhereScape68700\ ALLUSERS=1 RebootYesNo=No Reboot=Suppress /qn /L*vx c:\tmp\install\logs\WhereScape_log.txt
 
     - name: Convert line endings from Linux to Windows (PowerShell)
       win_shell: '(Get-Content "C:\tmp\install\partitioning.txt") -replace "`n", "`r`n" | Set-Content "C:\tmp\install\volume_partitioning.txt"'
@@ -156,10 +143,6 @@
         path: C:\tmp\install\psqlodbc_10_01_0000-x64\psqlodbc_x64.msi
         state: present
 
-    - name: Setup PostgreSQL ODBC SystemDSN
-      win_shell: |
-        Add-OdbcDsn -Name "Data-Ingest" -DriverName "PostgreSQL Unicode(x64)" -DsnType "System" -SetPropertyValue @("Server=MyServer", "Username=ohmygod", "Password=SuperSecr3t", "Port=5432", "Trusted_Connection=Yes", "Database=database_name")
-
     - name: Install GP loader
       win_package:
         path: C:\tmp\install\greenplum-loaders-4.3.4.0-build-1-WinXP-x86_32.msi
@@ -211,12 +194,6 @@
     - name: Install SQL Management studio
       win_shell: |
         C:\tmp\install\SSMS-Setup-ENU.exe /install /quiet /norestart
-
-    - name: Unzip Progress Datadirect
-      win_unzip:
-        src: C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64.zip
-        dest: C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64
-        delete_archive: yes        
 
     - name: Unzip Cloudwatch config file
       win_unzip:
