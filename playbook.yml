@@ -207,6 +207,19 @@
         $task.Triggers.Repetition.Interval = "PT1M"
         $task | Set-ScheduledTask
 
+    - name: Download scripts repo from Github
+      win_shell: |
+        $url = "https://github.com/UKHomeOffice/dq_wherescape_scripts/archive/master.zip"
+        $output = "C:\tmp\install\dq_wherescape_scripts-master.zip"
+        $wc = New-Object System.Net.WebClient
+        $wc.DownloadFile($url, $output)
+
+    - name: Unzip scripts
+      win_unzip:
+        src: C:\tmp\install\dq_wherescape_scripts-master.zip
+        dest: D:\SVN\trunk\Wherescape\scripts\nrt
+        delete_archive: yes
+
     - name: Download SQL Management studio
       win_shell: |
         $url = "https://go.microsoft.com/fwlink/?linkid=864329"
