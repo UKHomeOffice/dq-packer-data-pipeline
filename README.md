@@ -3,10 +3,10 @@
 
 # Additional install notes
 
-Progress DataDirect ODBC connector for GP needs manual install after the base AMI has been created using the extracted file already copied to the machine.
-Go to C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64\setup.exe and run the installer manually. Use the answers from C:\tmp\install\response.properties
+1. Add ODBC connectors at boot in user data with Powershell pulling in creds from RDS
 
-Pseudo Ansible would look like the following however it does not work at present.
+   Pseudo code:
 
-- name: Install Progress Datadirect
-  win_command: cmd /C C:\tmp\install\PROGRESS_DATADIRECT_CONNECT64_ODBC_7.1.4_WIN_64\setup.exe -f C:\tmp\install\response.properties –i silent
+  Add-OdbcDsn -Name "WSDQ" -DriverName "SQL Server" -DsnType "System" -SetPropertyValue @("Server=MyServer", "Username=admin", "Password=SuperSecr3t", "Port=1443", "Trusted_Connection=Yes", "Database=database_name")
+  Add-OdbcDsn -Name "HODQ" -DriverName "SQL Server" -DsnType "System" -SetPropertyValue @("Server=MyServer", "Username=admin", "Password=SuperSecr3t", "Port=1433", "Trusted_Connection=Yes", "Database=database_name")
+  Add-OdbcDsn -Name "MDS" -DriverName "SQL Server" -DsnType "System" -SetPropertyValue @("Server=MyServer", "Username=admin", "Password=SuperSecr3t", "Port=1433", "Trusted_Connection=Yes", "Database=database_name")
