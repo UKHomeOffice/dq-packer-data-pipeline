@@ -16,6 +16,11 @@
         path: C:\tmp\install
         state: directory
 
+    - name: Create Wherescape directory
+      win_file:
+        path: C:\tmp\install\Wherescape
+        state: directory
+
     - name: Create LOG folder
       win_file:
         path: C:\LOG
@@ -238,11 +243,16 @@
         $wc = New-Object System.Net.WebClient
         $wc.DownloadFile($url, $output)
 
-    - name: Unzip scripts
-      win_unzip:
-        src: C:\tmp\install\dq_wherescape_scripts-master.zip
-        dest: D:\SVN\trunk\Wherescape\scripts\nrt
-        delete_archive: yes
+    - name: Unzip files and copy to correct location
+      win_shell: |
+        $extractPath = "C:\tmp\install\Wherescape"
+        $ZipPath = "C:\tmp\install\dq_wherescape_scripts-master.zip"
+        $zipfile = (new-object -com shell.application).NameSpace($ZipPath)
+        $destination = (new-object -com shell.application).NameSpace($extractPath)
+        $destination.CopyHere($zipfile.Items())
+        $destinationPath = "D:\SVN\trunk\Wherescape\scripts\nrt"
+        Get-ChildItem $extractPath\Wherescape | Copy -Destination $destinationPath -Recurse
+        Remove-Item $extractPath -Recurse -Force
 
     - name: Download SQL Management studio
       win_shell: |
