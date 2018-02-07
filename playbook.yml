@@ -94,10 +94,10 @@
 
     - name: Delete AWS CLI config
       win_shell: |
-        $folders = 'C:\Windows\System32\config\systemprofile\.aws\','C:\Windows\Users\Administrator\.aws\credentials'
+        $folders = "'C:\Windows\System32\config\systemprofile\.aws\','C:\Users\Administrator\.aws\'"
         Get-ChildItem $folders -r -filter credentials | Remove-Item
       args:
-        executable: powershell.exe  
+        executable: powershell.exe
 
     - name: Convert line endings from Linux to Windows (PowerShell)
       win_shell: '(Get-Content "C:\tmp\install\partitioning.txt") -replace "`n", "`r`n" | Set-Content "C:\tmp\install\volume_partitioning.txt"'
