@@ -2,6 +2,7 @@
 
 - name: Build Windows server.
   hosts: all
+  gather_facts: false
   tasks:
     - name: install all critical and security updates
       win_updates:
@@ -246,14 +247,14 @@
     - name: Unzip wherescape
       win_unzip:
         src: C:\tmp\install\dq_wherescape_scripts-master.zip
-        dest: C:\tmp\install
+        dest: C:\tmp\install\
         delete_archive: yes
 
     - name: Copy scripts to correct location
       win_shell: |
         $extractPath = "C:\tmp\install\dq_wherescape_scripts-master"
         $destinationPath = "D:\SVN\trunk\Wherescape\scripts\nrt"
-        Get-ChildItem $extractPath\dq_wherescape_scripts-master | Copy -Destination $destinationPath -Recurse
+        Get-ChildItem $extractPath | Copy -Destination $destinationPath -Recurse
         Remove-Item $extractPath -Recurse -Force
 
     - name: Download SQL Management studio
