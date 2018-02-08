@@ -243,15 +243,17 @@
         $wc = New-Object System.Net.WebClient
         $wc.DownloadFile($url, $output)
 
-    - name: Unzip files and copy to correct location
+    - name: Unzip wherescape
+      win_unzip:
+        src: C:\tmp\install\dq_wherescape_scripts-master.zip
+        dest: C:\tmp\install
+        delete_archive: yes
+
+    - name: Copy scripts to correct location
       win_shell: |
-        $extractPath = "C:\tmp\install\Wherescape"
-        $ZipPath = "C:\tmp\install\dq_wherescape_scripts-master.zip"
-        $zipfile = (new-object -com shell.application).NameSpace($ZipPath)
-        $destination = (new-object -com shell.application).NameSpace($extractPath)
-        $destination.CopyHere($zipfile.Items())
+        $extractPath = "C:\tmp\install\dq_wherescape_scripts-master"
         $destinationPath = "D:\SVN\trunk\Wherescape\scripts\nrt"
-        Get-ChildItem $extractPath\Wherescape | Copy -Destination $destinationPath -Recurse
+        Get-ChildItem $extractPath\dq_wherescape_scripts-master | Copy -Destination $destinationPath -Recurse
         Remove-Item $extractPath -Recurse -Force
 
     - name: Download SQL Management studio
