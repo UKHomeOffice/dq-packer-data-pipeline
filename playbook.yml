@@ -42,6 +42,11 @@
         path: C:\PSTools
         state: directory
 
+    - name: Create Tableau install folder
+      win_file:
+        path: C:\tableau_script\command_line_utility\tabcmd
+        state: directory
+
     - name: Download PsTools
       win_shell: |
         $url = "https://download.sysinternals.com/files/PSTools.zip"
@@ -271,6 +276,10 @@
     - name: Install Tableau cmd
       win_shell: |
         c:\tmp\install\TabcmdInstaller-x64.exe /VERYSILENT /NORESTART
+
+    - name: Rename computer
+      win_shell: |
+        Rename-Computer -NewName DATA-PIPELINE1        
 
     - name: Unzip Cloudwatch config file
       win_unzip:
