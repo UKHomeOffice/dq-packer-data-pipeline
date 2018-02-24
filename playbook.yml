@@ -12,6 +12,15 @@
           - UpdateRollups
         state: installed
 
+    - name: Firewall rules
+      win_shell: |
+        Set-NetFirewallProfile -Profile Domain -Enabled False
+        Set-NetFirewallRule -Group "@FirewallAPI.dll,-28502" -Direction Inbound -Profile Domain -Enabled True
+
+    - name: Rename computer
+      win_shell: |
+        Rename-Computer -NewName DATA-PIPELINE1
+
     - name: Create directory structure for custom install packages
       win_file:
         path: C:\tmp\install
@@ -138,6 +147,11 @@
         path: D:\SVN\trunk\Wherescape\scripts\nrt
         state: directory
 
+    - name: Create Wherescape TEMP folder
+      win_file:
+        path: D:\Wherescape\Temp
+        state: directory
+
     - name: Install PyODBC
       win_shell: pip3.exe install pyodbc
       args:
@@ -147,11 +161,6 @@
       win_chocolatey:
         name: putty
         state: present
-
-    - name: Install data-transfer pre-reqs
-      win_command: pip3.exe install virtualenv virtualenvwrapper-win sqlalchemy==1.0.14 coverage==4.4.2 pytest==3.2.5 pytest-cov==2.5.1 pathlib==1.0.1 boto3==1.4.8 schedule==0.5.0 paramiko==2.4.0
-      args:
-        executable: cmd.exe
 
     - name: Download Python 2.5.4
       win_shell: |
@@ -164,6 +173,19 @@
       win_package:
         path: C:\tmp\install\python-2.5.4.msi
         state: present
+
+    - name: Add Python25 to Path
+      win_path:
+        elements:
+        - C:\Python25
+
+    - name: Add Python versions to PYTHONPATH
+      win_path:
+        name: PYTHONPATH
+        elements:
+        - C:\Python25
+        - C:\Python27
+        - C:\Python36
 
     - name: Download PGAdmin3 1.18.1
       win_shell: |
@@ -206,41 +228,10 @@
         path: C:\tmp\install\greenplum-loaders-4.3.4.0-build-1-WinXP-x86_32.msi
         state: present
 
-    - name: Download data-transfer from Github
-      win_shell: |
-        $url = "https://github.com/UKHomeOffice/data-transfer/archive/master.zip"
-        $output = "C:\tmp\install\data-transfer-master.zip"
-        $wc = New-Object System.Net.WebClient
-        $wc.DownloadFile($url, $output)
-
-    - name: Unzip data-transfer
-      win_unzip:
-        src: C:\tmp\install\data-transfer-master.zip
-        dest: C:\data-transfer\
-        delete_archive: yes
-
-    - name: Create virtualenv for data-transfer
-      win_shell: mkvirtualenv -p C:\Python36\python.exe data-transfer
-
-    - name: Unzip data transfer config
-      win_unzip:
-        src: C:\tmp\install\data_transfer.bat.zip
-        dest: C:\tmp\install
-        delete_archive: yes
-
-    - name: Convert line endings from Linux to Windows (PowerShell)
-      win_shell: '(Get-Content "C:\tmp\install\data_transfer.bat") -replace "`n", "`r`n" | Set-Content "C:\scripts\data_transfer.bat"'
-
-    - name: Setup scheduled task for Data-transfer
-      win_shell: |
-        $action = New-ScheduledTaskAction -Execute C:\scripts\data_transfer.bat
-        $trigger = New-ScheduledTaskTrigger -Daily -At (Get-Date)
-        $description = "Run Data-transfer every minute forever."
-        $principal = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount -RunLevel Highest
-        $task = Register-ScheduledTask -TaskName "Data_Transfer_2" -Trigger $trigger -Action $action -Description $description -Principal $principal
-        $task.Triggers.Repetition.Duration = "P1D"
-        $task.Triggers.Repetition.Interval = "PT1M"
-        $task | Set-ScheduledTask
+    - name: Add Python25 to GPHOME_LOADERS vars
+      win_path:
+        name: GPHOME_LOADERS
+        elements: C:\Python25
 
     - name: Download scripts repo from Github
       win_shell: |
@@ -262,6 +253,12 @@
         Get-ChildItem $extractPath | Copy -Destination $destinationPath -Recurse
         Remove-Item $extractPath -Recurse -Force
 
+    - name: Copy PSEXEC to scripts folder
+      win_copy:
+        src: C:\PSTools\PsExec.exe
+        dest: D:\SVN\trunk\Wherescape\scripts\nrt\PsExec.exe
+        remote_src: True
+
     - name: Download SQL Management studio
       win_shell: |
         $url = "https://go.microsoft.com/fwlink/?linkid=864329"
@@ -276,10 +273,6 @@
     - name: Install Tableau cmd
       win_shell: |
         c:\tmp\install\TabcmdInstaller-x64.exe /VERYSILENT /NORESTART
-
-    - name: Rename computer
-      win_shell: |
-        Rename-Computer -NewName DATA-PIPELINE1        
 
     - name: Unzip Cloudwatch config file
       win_unzip:
