@@ -44,4 +44,3 @@ pipeline:
       - ./build.sh
     when:
       event: push
-      branch: master
