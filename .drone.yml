@@ -14,12 +14,20 @@ pipeline:
 
   build:
     image: chrisns/packer-ansible
+    secrets:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
     commands:
       - export HOME=/home/packer
       - packer build packer.json
+    when:
+      event: push
 
   packer-copy-notprod:
     image: chrisns/packer-encrypt-copy
+    secrets:
+      - NOTPROD_ACC_ID
+      - NOTPROD_ACC_KEY
     commands:
       - export filters="--owner 093401982388 --filters "Name=name,Values=dq-data-pipeline-server*""
       - export aws_id=${NOTPROD_ACC_ID}
@@ -33,6 +41,9 @@ pipeline:
 
   packer-copy-prod:
     image: chrisns/packer-encrypt-copy
+    secrets:
+      - PROD_ACC_ID
+      - PROD_ACC_KEY
     commands:
       - export filters="--owner 093401982388 --filters "Name=name,Values=dq-data-pipeline-server*""
       - export aws_id=${PROD_ACC_ID}
