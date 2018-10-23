@@ -154,11 +154,9 @@
         executable: cmd.exe
 
     - name: Download Python 2.5.4
-      win_shell: |
-        $url = "https://www.python.org/ftp/python/2.5.4/python-2.5.4.msi"
-        $output = "C:\tmp\install\python-2.5.4.msi"
-        $wc = New-Object System.Net.WebClient
-        $wc.DownloadFile($url, $output)
+      win_get_url:
+        url: https://www.python.org/ftp/python/2.5.4/python-2.5.4.msi
+        dest: C:\tmp\install\python-2.5.4.msi
 
     - name: Install Python 2.5.4
       win_package:
@@ -279,7 +277,7 @@
 
     - name: Rename computer
       win_shell: |
-        Rename-Computer -NewName DATA-PIPELINE1        
+        Rename-Computer -NewName DATA-PIPELINE1
 
     - name: Unzip Cloudwatch config file
       win_unzip:
