@@ -13,7 +13,7 @@
       "source_ami_filter": {
         "filters": {
           "virtualization-type": "hvm",
-          "name": "base-win-2012-wherescape-*",
+          "name": "base-win-2012-wherescape-v6",
           "root-device-type": "ebs"
         },
         "owners": [
